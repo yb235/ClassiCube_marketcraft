@@ -10,3 +10,4 @@ This folder contains general information relating to the game's source code.
 |portability.md | Provides information about porting this game to other platforms |
 |style.md | Explains the style guidelines that the source code generally follows |
 |strings.md | Provides details about the custom string type used by this game |
+|vercel-static-deployment-analysis.md | Comprehensive analysis and implementation plan for deploying ClassiCube as a static browser game on Vercel |
