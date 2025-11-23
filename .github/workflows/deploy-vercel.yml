@@ -1,0 +1,122 @@
+name: Build and Deploy to Vercel
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 3.1.50
+          actions-cache-folder: 'emsdk-cache'
+      
+      - name: Verify Emscripten installation
+        run: |
+          emcc --version
+          which emcc
+      
+      - name: Build WebClient
+        run: |
+          echo "Building ClassiCube for WebAssembly..."
+          make web RELEASE=1
+          
+          echo "Build artifacts:"
+          ls -lh build/web/
+      
+      - name: Prepare deployment directory
+        run: |
+          echo "Creating public directory structure..."
+          mkdir -p public/static
+          
+          echo "Copying build artifacts..."
+          cp build/web/ClassiCube.js public/
+          cp build/web/ClassiCube.wasm public/
+          
+          echo "Verifying files..."
+          ls -lh public/
+      
+      - name: Download texture pack
+        run: |
+          echo "Downloading default texture pack..."
+          wget -q -O public/static/default.zip https://classicube.net/static/default.zip || \
+          curl -s -o public/static/default.zip https://classicube.net/static/default.zip
+          
+          if [ -f "public/static/default.zip" ]; then
+            echo "✓ Successfully downloaded default.zip"
+            ls -lh public/static/default.zip
+          else
+            echo "⚠ Warning: Could not download default.zip"
+            exit 1
+          fi
+      
+      - name: Display deployment summary
+        run: |
+          echo "========================================="
+          echo "Deployment Summary"
+          echo "========================================="
+          echo "Files to deploy:"
+          find public -type f -exec ls -lh {} \;
+          echo ""
+          echo "Total deployment size:"
+          du -sh public/
+          echo "========================================="
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: classicube-web-build
+          path: public/
+          retention-days: 30
+      
+      # Deploy to Vercel (requires secrets to be configured)
+      - name: Deploy to Vercel
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./
+          vercel-args: '--prod'
+        continue-on-error: true
+      
+      - name: Deployment instructions
+        if: success()
+        run: |
+          echo "========================================="
+          echo "✓ Build successful!"
+          echo "========================================="
+          echo ""
+          echo "To deploy to Vercel, you have two options:"
+          echo ""
+          echo "Option 1: Using Vercel CLI (manual)"
+          echo "  1. Install Vercel CLI: npm i -g vercel"
+          echo "  2. Run: vercel --prod"
+          echo ""
+          echo "Option 2: Configure GitHub Secrets (automatic)"
+          echo "  1. Create a Vercel project"
+          echo "  2. Get your Vercel token from: https://vercel.com/account/tokens"
+          echo "  3. Add these secrets to your GitHub repository:"
+          echo "     - VERCEL_TOKEN: Your Vercel token"
+          echo "     - VERCEL_ORG_ID: Your Vercel organization ID"
+          echo "     - VERCEL_PROJECT_ID: Your Vercel project ID"
+          echo ""
+          echo "========================================="

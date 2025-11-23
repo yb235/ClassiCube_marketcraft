@@ -223,3 +223,13 @@ UpgradeLog*.htm
 # Eclipse
 .cproject
 .project
+
+# Vercel deployment
+.vercel/
+node_modules/
+
+# Build artifacts in public/ (but keep HTML and README)
+public/ClassiCube.js
+public/ClassiCube.wasm
+public/ClassiCube.data
+public/static/default.zip

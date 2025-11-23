@@ -1,0 +1,25 @@
+# Source files
+src/
+third_party/
+
+# Build artifacts
+build/
+
+# Documentation
+doc/
+
+# Git files
+.git/
+.github/
+
+# Android specific
+android/
+
+# Misc
+misc/
+
+# Development files
+Makefile
+*.md
+!public/README.md
+credits.txt

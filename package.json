@@ -1,0 +1,20 @@
+{
+  "name": "classicube-marketcraft",
+  "version": "1.0.0",
+  "description": "ClassiCube - A custom Minecraft Classic compatible client (Marketcraft fork)",
+  "scripts": {
+    "build": "bash scripts/build-for-vercel.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yb235/ClassiCube_marketcraft.git"
+  },
+  "keywords": [
+    "classicube",
+    "minecraft",
+    "webassembly",
+    "game"
+  ],
+  "author": "ClassiCube contributors",
+  "license": "SEE LICENSE IN license.txt"
+}
