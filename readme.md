@@ -213,6 +213,17 @@ The generated javascript file has some issues. [See here for how to fix](doc/com
 
 For details on how to integrate the webclient into a website, see [here](doc/hosting-webclient.md)
 
+### Deploying to Vercel
+
+This repository includes a complete setup for deploying ClassiCube as a static web application on Vercel:
+
+* **Quick Deploy:** Run `bash scripts/build-for-vercel.sh` to build and prepare for deployment
+* **Automated CI/CD:** Push to main branch to automatically build and deploy via GitHub Actions
+* **Comprehensive Guide:** See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions
+* **Full Analysis:** See [doc/vercel-static-deployment-analysis.md](doc/vercel-static-deployment-analysis.md) for technical details
+
+The deployment includes a responsive HTML interface, optimized WebAssembly build, and all necessary configuration for Vercel hosting.
+
 <details>
 <summary><h2>Compiling - consoles</h2></summary>
 

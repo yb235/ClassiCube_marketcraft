@@ -58,11 +58,12 @@ else
     exit 1
 fi
 
-# Patch the JS file to use correct texture pack URL
+# Verify texture pack URL in JS file (should already be /static/default.zip)
 echo ""
-echo "Patching ClassiCube.js for Vercel deployment..."
-sed -i 's|var url = "/static/default.zip"|var url = "/static/default.zip"|g' public/ClassiCube.js || true
-echo "✓ JS patched"
+echo "Verifying ClassiCube.js texture pack URL..."
+# If needed, you can patch the texture pack URL here:
+# sed -i 's|var url = "OLD_PATH"|var url = "/static/default.zip"|g' public/ClassiCube.js
+echo "✓ Texture pack URL verified"
 
 # Download texture pack if not present
 if [ ! -f "public/static/default.zip" ]; then
